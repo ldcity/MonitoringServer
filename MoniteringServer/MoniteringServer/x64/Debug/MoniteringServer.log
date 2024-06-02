@@ -1,0 +1,92 @@
+﻿  DBConnection.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\DBConnection.cpp(117,6): warning C4101: 'queryError' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\DBConnection.cpp(174,6): warning C4101: 'queryError' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\DBConnection.cpp(224,5): warning C4267: '인수': 'size_t'에서 'unsigned long'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\DBConnection.cpp(250,109): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  DBConnection_TLS.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\DBConnection_TLS.cpp(80,6): warning C4101: 'queryError' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\DBConnection_TLS.cpp(108,6): warning C4101: 'queryError' :참조되지 않은 지역 변수입니다.
+  Exception.cpp
+  LanServer.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LanServer.cpp(148,29): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LanServer.cpp(197,8): warning C4101: 'recvBytes' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LanServer.cpp(349,6): warning C4302: '형식 캐스트': 'LPOVERLAPPED'에서 'unsigned char'(으)로 잘립니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LanServer.cpp(359,11): warning C4302: '형식 캐스트': 'LPOVERLAPPED'에서 'unsigned char'(으)로 잘립니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LanServer.cpp(588,66): warning C4805: '==': 연산에 'bool' 형식과 'CHAR' 형식을 함께 사용하는 것은 안전하지 않습니다.
+  main.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.h(37,11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.h(47,11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MonitoringLanServer.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.h(37,11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.h(47,11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MonitoringWanServer.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+  NetServer.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LOG.h(2,1): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\NetServer.cpp(148,29): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\NetServer.cpp(197,8): warning C4101: 'recvBytes' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\NetServer.cpp(350,6): warning C4302: '형식 캐스트': 'LPOVERLAPPED'에서 'unsigned char'(으)로 잘립니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\NetServer.cpp(360,11): warning C4302: '형식 캐스트': 'LPOVERLAPPED'에서 'unsigned char'(으)로 잘립니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\NetServer.cpp(602,66): warning C4805: '==': 연산에 'bool' 형식과 'CHAR' 형식을 함께 사용하는 것은 안전하지 않습니다.
+  Packet.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+  PerformanceMonitor.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.h(37,11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.h(47,11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\PerformanceMonitor.cpp(193,7): warning C4101: 'i' :참조되지 않은 지역 변수입니다.
+  Profiling.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(88,37): warning C4805: '==': 연산에 'long' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(121,37): warning C4805: '==': 연산에 'long' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(189,20): warning C4244: '초기화 중': '__int64'에서 'double'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(224,18): warning C4477: 'fwprintf' : 서식 문자열 '%10d'에 'int' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 '__int64'입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(224,18): message : 서식 문자열에서 '%lld'을(를) 사용하는 것이 좋습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(224,18): message : 서식 문자열에서 '%Id'을(를) 사용하는 것이 좋습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\Profiling.cpp(224,18): message : 서식 문자열에서 '%I64d'을(를) 사용하는 것이 좋습니다.
+  RingBuffer.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(57,19): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(59,26): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(66,31): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(68,29): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(79,26): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(81,15): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(84,29): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(90,19): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(92,14): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(188,16): warning C4244: '초기화 중': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\RingBuffer.cpp(202,16): warning C4244: '초기화 중': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  SerializingBuffer.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeStack.h(7,1): warning C4005: 'CRASH': 매크로 재정의
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LockFreeFreeList.h(26,1): message : 'CRASH'의 이전 정의를 참조하십시오.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\SerializingBuffer.cpp(115,34): warning C4805: '==': 연산에 'bool' 형식과 'char' 형식을 함께 사용하는 것은 안전하지 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\SerializingBuffer.cpp(133,23): warning C4244: '=': 'uint64_t'에서 'unsigned char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\SerializingBuffer.cpp(134,8): warning C4244: '인수': 'uint64_t'에서 'unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  TextParser.cpp
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\TextParser.cpp(70,33): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\TextParser.cpp(86,28): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\TextParser.cpp(95,26): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\TextParser.cpp(116,6): warning C4101: 'iLength' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\TextParser.cpp(113,11): warning C4101: 'chpBuff' :참조되지 않은 지역 변수입니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\TextParser.cpp(114,10): warning C4101: 'chWord' :참조되지 않은 지역 변수입니다.
+  코드를 생성하고 있습니다...
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\NetServer.cpp(776): warning C4715: 'NetServer::SendPacket': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\MonitoringWanServer.cpp(24): warning C4715: 'MonitoringWanServer::MonitoringWanServerStart': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\MoniteringServer\LanServer.cpp(761): warning C4715: 'LanServer::SendPacket': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  MoniteringServer.vcxproj -> C:\Users\ldy\Desktop\프로카데미\프로젝트\MoniteringServer\x64\Debug\MoniteringServer.exe
