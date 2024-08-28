@@ -476,12 +476,34 @@ bool MonitoringLanServer::MonitorThread_serv()
 // 1분에 한번씩 Monitoring 정보를 DB에 Write
 bool MonitoringLanServer::DBWriteThread_serv()
 {
-	wchar_t tmpTableName[64] = { L'\0' };
-
 	while (!dbConn->Open())
 	{
 		Sleep(1000);
 	}
+
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+
+	// 해당 날짜의 테이블 (monitorlog_yymmdd) 이름 생성
+	std::wstringstream tableNameStream;
+	tableNameStream << mDBName << L".monitorlog_"
+		<< std::setw(2) << std::setfill(L'0') << (st.wYear % 100)
+		<< std::setw(2) << std::setfill(L'0') << st.wMonth
+		<< std::setw(2) << std::setfill(L'0') << st.wDay;
+
+	std::wstring tmpTableName = tableNameStream.str();
+
+	// 해당 날짜의 테이블 select 쿼리 생성
+	std::wstringstream queryStream;
+	queryStream << L"SELECT * FROM `" << tmpTableName << L"`;";
+	std::wstring createTableQuery = queryStream.str();
+
+	// 테이블이 존재하는지 확인
+	int ret = dbConn->Query(createTableQuery.c_str());
+
+	// 테이블이 생성되어 있지 않은 경우
+	if (ret <= 0)
+		tmpTableName.clear();
 
 	while (1)
 	{
@@ -491,32 +513,36 @@ bool MonitoringLanServer::DBWriteThread_serv()
 		{
 			SYSTEMTIME st;
 			GetLocalTime(&st);
-			wchar_t buffer[64];
 
-			// 해당 날짜의 테이블 (monitorlog_yymmdd) 이름
-			swprintf_s(buffer, L"%s`.`monitorlog_%02d%02d%02d", mDBName, st.wYear % 100, st.wMonth, st.wDay);
+			// 해당 날짜의 테이블 이름 생성
+			tableNameStream.str(L""); // 스트림 초기화
+			tableNameStream << mDBName << L".monitorlog_"
+				<< std::setw(2) << std::setfill(L'0') << (st.wYear % 100)
+				<< std::setw(2) << std::setfill(L'0') << st.wMonth
+				<< std::setw(2) << std::setfill(L'0') << st.wDay;
+			std::wstring newTableName = tableNameStream.str();
 
-			// tmpTableName에 테이블 이름이 없거나 저장했던 테이블 이름이 시간이 지남에 따라
-			// 달라졌다면 tmpTableName에 셋팅
-			if (tmpTableName == NULL || wcscmp(buffer, tmpTableName) != 0)
+
+			// table 이름이 하루가 지나 달라졌거나 당일 테이블이 없다면 테이블 생성해야함
+			// 날짜가 같은 table일 경우, skip
+			if (newTableName != tmpTableName)
 			{
-				wcscpy_s(tmpTableName, _countof(tmpTableName), buffer);
+				tmpTableName = newTableName;
 
-				// 해당 날짜의 테이블 Create
-				wchar_t createTableQuery[256];
-				swprintf_s(createTableQuery,
-					L"create table `%s` (`no` BIGINT NOT NULL AUTO_INCREMENT, %s", tmpTableName,
-					L"`logtime` DATETIME,"
-					L"`serverno` INT NOT NULL,"
-					L"`type` INT NOT NULL,"
-					L"`avr` INT NOT NULL,"
-					L"`min` INT NOT NULL,"
-					L"`max` INT NOT NULL,"
-					L"PRIMARY KEY(`no`)); ");
+				// 테이블 생성 쿼리 생성
+				queryStream.str(L""); // 스트림 초기화
+				queryStream << L"CREATE TABLE IF NOT EXISTS `" << tmpTableName << L"` ("
+					<< L"`no` BIGINT NOT NULL AUTO_INCREMENT, "
+					<< L"`logtime` DATETIME, "
+					<< L"`logcode` INT NOT NULL, "
+					<< L"`type` INT NOT NULL, "
+					<< L"`data` INT NOT NULL, "
+					<< L"PRIMARY KEY(`no`));";
 
-				// 테이블 생성 쿼리 던짐
-				// 날짜가 같은 table일 경우, skip
-				dbConn->QuerySave(createTableQuery);
+				std::wstring createTableQuery = queryStream.str();
+
+				// 테이블 생성 쿼리 실행
+				dbConn->Query(createTableQuery.c_str());
 			}
 
 			AcquireSRWLockExclusive(&dbDataMapLock);
@@ -536,14 +562,41 @@ bool MonitoringLanServer::DBWriteThread_serv()
 
 				avr = monitorData->iSum / monitorData->iCount;
 
-				wchar_t insertDataQuery[256];
-				swprintf_s(insertDataQuery, L"insert into `%s` %s values (now(), %d, %d, %d, %d, %d)",
+				//wchar_t insertDataQuery[256];
+				//swprintf_s(insertDataQuery, L"insert into `%s` %s values (now(), %d, %d, %d, %d, %d)",
+				//	tmpTableName,
+				//	L"(`logtime`, `serverno`, `type`, `avr`, `min`, `max`)",
+				//	monitorData->iServerNo, monitorData->type, avr, monitorData->iMin, monitorData->iMax);
+
+				// min 데이터
+				wchar_t insertDataQuery[256] = { 0 };
+				swprintf_s(insertDataQuery, L"INSERT INTO `%s` %s values (now(), %d, %d, %d)",
 					tmpTableName,
-					L"(`logtime`, `serverno`, `type`, `avr`, `min`, `max`)",
-					monitorData->iServerNo, monitorData->type, avr, monitorData->iMin, monitorData->iMax);
+					L"(`logtime`, `logcode`, `type`, `data`)",
+					monitorData->type, MONITORTYPE::df_MONITOR_MIN, monitorData->iMin);
 
 				// insert 쿼리 던짐
-				dbConn->QuerySave(insertDataQuery);
+				dbConn->Query(insertDataQuery);
+
+				// max 데이터
+				memset(insertDataQuery, 0, 255 * sizeof(wchar_t));
+				swprintf_s(insertDataQuery, L"INSERT INTO `%s` %s values (now(), %d, %d, %d)",
+					tmpTableName,
+					L"(`logtime`, `logcode`, `type`, `data`)",
+					monitorData->type, MONITORTYPE::df_MONITOR_MAX, monitorData->iMax);
+
+				// insert 쿼리 던짐
+				dbConn->Query(insertDataQuery);
+
+				// avg 데이터
+				memset(insertDataQuery, 0, 255 * sizeof(wchar_t));
+				swprintf_s(insertDataQuery, L"INSERT INTO `%s` %s values (now(), %d, %d, %d)",
+					tmpTableName,
+					L"(`logtime`, `logcode`, `type`, `data`)",
+					monitorData->type, MONITORTYPE::df_MONITOR_AVG, avr);
+
+				// insert 쿼리 던짐
+				dbConn->Query(insertDataQuery);
 
 				// 데이터 정보 reset
 				monitorData->iSum = 0;
@@ -568,11 +621,18 @@ void MonitoringLanServer::PacketProc_Login(uint64_t sessionID, CPacket* packet)
 
 	*packet >> serverNo;			// Server 고유 번호
 
+	AcquireSRWLockShared(&clientMapLock);
 	auto iter = clientMap.find(sessionID);
 
 	// 로그인 요청 전에 이미 로그인되어 있다면 에러
 	if (iter == clientMap.end())
+	{
+		ReleaseSRWLockShared(&clientMapLock);
 		OnError(LOGINEXIST, L"Server is already logined...");
+		return;
+	}
+
+	ReleaseSRWLockShared(&clientMapLock);
 
 	ClientInfo* client = (*iter).second;
 	client->serverNo = serverNo;

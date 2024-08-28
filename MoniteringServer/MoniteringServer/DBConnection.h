@@ -8,6 +8,7 @@
 
 #include <Windows.h>
 #include <string>
+#include <vector>
 
 #include "LOG.h"
 
@@ -41,15 +42,18 @@ public:
 	// Commit
 	bool Commit();
 
+	// Make Query - 쿼리 날리고 결과 저장 X
+	bool Query(const wchar_t* strFormat, ...);
 
 	// Make Query - 쿼리 날리고 결과 임시 보관
-	bool Query(const wchar_t* strFormat, ...);
-	
-	// Make Query - 쿼리 날리고 결과 저장 X
-	bool QuerySave(const wchar_t* strFormat, ...);
+	// [return]
+	// -1 : 일반적인 실패
+	// 0 : 쿼리 성공 후 반환된 row 값이 0 (table 내에 없는 값 select
+	// 1 이상 : 쿼리 성공 후 반환된 row 값
+	int QuerySave(const wchar_t* strFormat, ...);
 
 	// Transaction ~ Query ~ Commit
-	bool AllQuery(string query);
+	bool AllQuery(std::string query);
 
 	// 쿼리 날린 것에 대한 결과 뽑아오기
 	inline MYSQL_ROW FetchRow()
@@ -69,6 +73,13 @@ public:
 	}
 
 	void onError();
+
+public:
+	bool CallStoreProc(const std::wstring& procName, const std::wstring& tableName, const std::vector<std::pair<int, int>>& typeData);
+
+private:
+	// JSON 데이터 생성 -> 프로시저 매개변수로 전달을 위해 필요
+	std::string GenerateJSONData(const std::vector<std::pair<int, int>>& typeData);
 
 private:
 	MYSQL conn;
@@ -101,5 +112,6 @@ private:
 	uint64_t connectFailCnt;
 	uint64_t disconnectCnt;
 };
+
 
 #endif

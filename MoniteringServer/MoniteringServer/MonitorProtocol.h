@@ -50,15 +50,14 @@ enum en_PACKET_TYPE
 	//
 	// 서버의 다운 및 기타 이유로 모니터링 데이터가 전달되지 못할떄를 대비하여 TimeStamp 를 전달한다.
 	// 이는 모니터링 클라이언트에서 계산,비교 사용한다.
-	// 
+	// 서버가 모니터링서버로 데이터 전송 (Lan)
 	//	{
-	//		WORD	Type
-	//		BYTE	ServerNo
-	//		BYTE	DataType				// 모니터링 데이터 Type 하단 Define 됨.(X) -> MonitoringDefine.h에 정의한 dataType
+	//		WORK    len						// 패킷 크기
+	//		WORD	Type					// 패킷 타입
+	//		BYTE	ServerNo				// 서버 번호
+	//		BYTE	DataType				// 모니터링 데이터 Type
 	//		int		DataValue				// 해당 데이터 수치.
-	//		int		TimeStamp				// 해당 데이터를 얻은 시간 TIMESTAMP  (time() 함수)
-	//										// 본래 time 함수는 time_t 타입변수이나 64bit 로 낭비스러우니
-	//										// int 로 캐스팅하여 전송. 그래서 2038년 까지만 사용가능
+	//		int		TimeStamp				// 해당 데이터를 얻은 시간 TIMESTAMP
 	//	}
 	//
 	//------------------------------------------------------------

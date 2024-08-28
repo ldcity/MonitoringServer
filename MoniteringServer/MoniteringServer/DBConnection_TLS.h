@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 class DBConnector_TLS
 {
 public:
@@ -29,7 +30,11 @@ public:
 	void Close();
 
 	// Make Query - 쿼리 날리고 결과 임시 보관
-	bool Query(const wchar_t* strFormat, ...);
+	// [return]
+	// -1 : 일반적인 실패
+	// 0 : 쿼리 성공 후 반환된 row 값이 0 (table 내에 없는 값 select
+	// 1 이상 : 쿼리 성공 후 반환된 row 값
+	int Query(const wchar_t* strFormat, ...);
 
 	// Make Query - 쿼리 날리고 결과 저장 X
 	bool QuerySave(const wchar_t* strFormat, ...);

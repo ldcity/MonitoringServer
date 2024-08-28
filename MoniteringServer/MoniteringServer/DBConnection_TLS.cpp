@@ -2,6 +2,7 @@
 
 #include "DBConnection_TLS.h"
 
+
 DBConnector_TLS::DBConnector_TLS(const wchar_t* host, const wchar_t* user, const wchar_t* password, const wchar_t* db, unsigned short port, bool sslOff) : mFlag(0)
 {
 	tlsIndex = TlsAlloc();
@@ -26,13 +27,13 @@ DBConnector_TLS::~DBConnector_TLS()
 {
 	DBConnector* dbConn;
 
+	// 리소스 정리 작업을 위해 필요한 LockFreeStack에서 DBConnector 객체 pop
 	while (DBStack.Pop(&dbConn))
 	{
 		delete dbConn;
 	}
 
 	TlsFree(tlsIndex);
-
 }
 
 DBConnector* DBConnector_TLS::GetDBConnector()
@@ -42,6 +43,7 @@ DBConnector* DBConnector_TLS::GetDBConnector()
 	{
 		dbConn = new DBConnector(mHost, mUser, mPassword, mDB, mPort, mFlag);
 
+		// 리소스 정리 작업을 위해 필요한 LockFreeStack
 		DBStack.Push(dbConn);
 		TlsSetValue(tlsIndex, dbConn);
 
@@ -54,6 +56,13 @@ DBConnector* DBConnector_TLS::GetDBConnector()
 	return dbConn;
 }
 
+bool DBConnector_TLS::Open()
+{
+	DBConnector* dbConn = GetDBConnector();
+
+	return dbConn->Open();
+}
+
 void DBConnector_TLS::Close()
 {
 	DBConnector* dbConn = GetDBConnector();
@@ -61,12 +70,12 @@ void DBConnector_TLS::Close()
 	return dbConn->Close();
 }
 
-bool DBConnector_TLS::Query(const wchar_t* strFormat, ...)
+int DBConnector_TLS::Query(const wchar_t* strFormat, ...)
 {
 	if (DBConnector::QUERY_MAX_LEN < wcslen(strFormat))
 	{
-		wprintf( L"Query Length is Too Long!");
-		return false;
+		//wprintf( L"Query Length is Too Long!");
+		return -1;
 	}
 
 	DBConnector* dbConn = GetDBConnector();
@@ -84,7 +93,7 @@ bool DBConnector_TLS::Query(const wchar_t* strFormat, ...)
 	va_end(vList);
 
 	if (FAILED(hResult))
-		return false;
+		return -1;
 
 	return dbConn->Query(queryMsg);
 }
@@ -93,7 +102,7 @@ bool DBConnector_TLS::QuerySave(const wchar_t* strFormat, ...)
 {
 	if (DBConnector::QUERY_MAX_LEN < wcslen(strFormat))
 	{
-		wprintf(L"Query Length is Too Long!");
+		//wprintf(L"Query Length is Too Long!");
 		return false;
 	}
 

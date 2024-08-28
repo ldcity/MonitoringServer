@@ -76,10 +76,10 @@ struct MonitoringInfo
 {
 	BYTE iServerNo;
 	int type;
-	int iSum;				// avr 계산 용도
-	int iCount;				// avr 계산 용도
-	int iMin;
-	int iMax;
+	int iSum;			// avr 계산 용도
+	int iCount;			// avr 계산 용도
+	int iMin;			// 최소
+	int iMax;			// 최대
 
 	MonitoringInfo() : iServerNo(-1), type(-1), iSum(0), iCount(0), iMin(INT_MAX), iMax(INT_MIN) {}
 };

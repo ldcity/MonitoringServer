@@ -68,6 +68,13 @@ private:
 	PerformanceMonitor perfomanceMonitor;
 	wstring m_tempIp;
 	string m_ip;
+
+	enum MONITORTYPE
+	{
+		df_MONITOR_MIN,
+		df_MONITOR_MAX,
+		df_MONITOR_AVG
+	};
 	
 	// Server 별 Monitoring Type
 	// 행 : 서버 번호 / 열 : dataType 번호
