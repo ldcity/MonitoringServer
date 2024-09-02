@@ -1,8 +1,11 @@
 #include <process.h>
+#include <conio.h>
 
 #include "MonitoringLanServer.h"
 #include "TextParser.h"
-#include "MonitorProtocol.h"
+#include "Profiling.h"
+
+HANDLE g_endEvent = NULL;
 
 unsigned __stdcall MonitorThread(LPVOID param)
 {
@@ -63,7 +66,6 @@ bool MonitoringLanServer::MonitoringLanServerStart()
 
 	wmemcpy_s(mDBName, 64, dbName, 64);
 
-	//dbConn_TLS = new DBConnector_TLS(host, user, password, dbName, port, true);
 	dbConn = new DBConnector(host, user, password, dbName, port, true);
 	
 
@@ -100,6 +102,8 @@ bool MonitoringLanServer::MonitoringLanServerStart()
 
 		return false;
 	}
+
+	g_endEvent = CreateEvent(NULL, TRUE, FALSE, NULL); // 수동 리셋 이벤트 생성
 
 	// Lan Server 정보 등록
 	wchar_t lanIP[16];
@@ -206,15 +210,38 @@ bool MonitoringLanServer::MonitoringLanServerStop()
 	return true;
 }
 
+void SaveProfilingData()
+{
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+
+	wchar_t buffer[20];
+	swprintf_s(buffer, L"%02d%02d%02d_%02d%02d.txt", st.wYear % 100, st.wMonth, st.wDay, st.wHour, st.wMinute);
+
+	wchar_t name[256] = L"Profiling_";
+	wcscat_s(name, buffer);
+
+	PRO_TEXT(name);
+	PRO_RESET();
+}
+
+
 // 1초마다 모니터링 클라이언트로 프로세스 및 하드웨어 정보 전송
 bool MonitoringLanServer::MonitorThread_serv()
 {
 	CPacket* packets[5];
 
+
+	HANDLE events[2] = { monitorTickEvent, g_endEvent };
+
 	while (1)
 	{
 		// 1초마다 모니터링 데이터 전송
-		DWORD ret = WaitForSingleObject(monitorTickEvent, 1000);
+		//DWORD ret = WaitForSingleObject(monitorTickEvent, 1000);
+
+		// 1초마다 모니터링 -> 타임아웃 건도 처리
+		DWORD ret = WaitForMultipleObjects(2, events, FALSE, 1000);
+
 
 		if (ret == WAIT_TIMEOUT)
 		{
@@ -467,6 +494,21 @@ bool MonitoringLanServer::MonitorThread_serv()
 				monitorInfo->iMax = dataValue;
 
 			ReleaseSRWLockExclusive(&dbDataMapLock);
+
+
+			if (_kbhit())
+			{
+				int ch = _getch();
+				if (ch == 'y')
+					SetEvent(g_endEvent);
+			}
+		}
+		else if (ret == WAIT_OBJECT_0 + 1)
+		{
+			// 'y' 키 입력 이벤트가 발생하면 프로파일링 데이터 저장
+			SaveProfilingData();
+			wprintf(L"################################# Save Profiling Text #################################\n");
+			ResetEvent(g_endEvent); // 이벤트 리셋
 		}
 	}
 
@@ -486,7 +528,7 @@ bool MonitoringLanServer::DBWriteThread_serv()
 
 	// 해당 날짜의 테이블 (monitorlog_yymmdd) 이름 생성
 	std::wstringstream tableNameStream;
-	tableNameStream << mDBName << L".monitorlog_"
+	tableNameStream << L"monitor_"
 		<< std::setw(2) << std::setfill(L'0') << (st.wYear % 100)
 		<< std::setw(2) << std::setfill(L'0') << st.wMonth
 		<< std::setw(2) << std::setfill(L'0') << st.wDay;
@@ -516,7 +558,7 @@ bool MonitoringLanServer::DBWriteThread_serv()
 
 			// 해당 날짜의 테이블 이름 생성
 			tableNameStream.str(L""); // 스트림 초기화
-			tableNameStream << mDBName << L".monitorlog_"
+			tableNameStream << L"monitor_"
 				<< std::setw(2) << std::setfill(L'0') << (st.wYear % 100)
 				<< std::setw(2) << std::setfill(L'0') << st.wMonth
 				<< std::setw(2) << std::setfill(L'0') << st.wDay;
@@ -562,41 +604,30 @@ bool MonitoringLanServer::DBWriteThread_serv()
 
 				avr = monitorData->iSum / monitorData->iCount;
 
-				//wchar_t insertDataQuery[256];
-				//swprintf_s(insertDataQuery, L"insert into `%s` %s values (now(), %d, %d, %d, %d, %d)",
-				//	tmpTableName,
-				//	L"(`logtime`, `serverno`, `type`, `avr`, `min`, `max`)",
-				//	monitorData->iServerNo, monitorData->type, avr, monitorData->iMin, monitorData->iMax);
 
-				// min 데이터
-				wchar_t insertDataQuery[256] = { 0 };
-				swprintf_s(insertDataQuery, L"INSERT INTO `%s` %s values (now(), %d, %d, %d)",
-					tmpTableName,
-					L"(`logtime`, `logcode`, `type`, `data`)",
-					monitorData->type, MONITORTYPE::df_MONITOR_MIN, monitorData->iMin);
+				int utf8Length = WideCharToMultiByte(CP_UTF8, 0, tmpTableName.c_str(), lstrlenW(tmpTableName.c_str()), NULL, 0, NULL, NULL);
 
-				// insert 쿼리 던짐
-				dbConn->Query(insertDataQuery);
+				// 버퍼를 사용하여 변환된 UTF-8 문자열을 저장
+				std::string tmpTableNameStr(utf8Length, 0);
 
-				// max 데이터
-				memset(insertDataQuery, 0, 255 * sizeof(wchar_t));
-				swprintf_s(insertDataQuery, L"INSERT INTO `%s` %s values (now(), %d, %d, %d)",
-					tmpTableName,
-					L"(`logtime`, `logcode`, `type`, `data`)",
-					monitorData->type, MONITORTYPE::df_MONITOR_MAX, monitorData->iMax);
+				// 변환 수행
+				WideCharToMultiByte(CP_UTF8, 0, tmpTableName.c_str(), lstrlenW(tmpTableName.c_str()), const_cast<char*>(tmpTableNameStr.c_str()), utf8Length, NULL, NULL);
 
-				// insert 쿼리 던짐
-				dbConn->Query(insertDataQuery);
+				// 저장 프로시저 호출
+				std::wstring procedureQuery = L"CALL InsertMonitoringData(?, ?, ?)";
 
-				// avg 데이터
-				memset(insertDataQuery, 0, 255 * sizeof(wchar_t));
-				swprintf_s(insertDataQuery, L"INSERT INTO `%s` %s values (now(), %d, %d, %d)",
-					tmpTableName,
-					L"(`logtime`, `logcode`, `type`, `data`)",
-					monitorData->type, MONITORTYPE::df_MONITOR_AVG, avr);
+				// 데이터 타입 (최대값, 최소값, 평균값)
+				std::vector<pair<int, int>> typeData =
+				{
+					{MONITORTYPE::df_MONITOR_MIN, monitorData->iMin},
+					{MONITORTYPE::df_MONITOR_MAX, monitorData->iMax},
+					{MONITORTYPE::df_MONITOR_AVG, avr},
+				};
 
-				// insert 쿼리 던짐
-				dbConn->Query(insertDataQuery);
+				if (!dbConn->CallStoreProcedure(procedureQuery, tmpTableNameStr, monitorData->type, typeData))
+				{
+					dbConn->ReOpen();
+				}
 
 				// 데이터 정보 reset
 				monitorData->iSum = 0;
@@ -604,7 +635,6 @@ bool MonitoringLanServer::DBWriteThread_serv()
 				monitorData->iMin = INT_MAX;
 				monitorData->iMax = INT_MIN;
 			}
-
 
 			ReleaseSRWLockExclusive(&dbDataMapLock);
 		}
@@ -718,7 +748,6 @@ void MonitoringLanServer::OnClientLeave(uint64_t sessionID)
 	// client 객체 삭제
 	AcquireSRWLockExclusive(&clientMapLock);
 
-	
 	auto iter = clientMap.find(sessionID);
 		
 	// map에 없는 객체를 삭제하려한다?? error!

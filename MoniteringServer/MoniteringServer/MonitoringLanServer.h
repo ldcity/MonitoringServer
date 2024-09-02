@@ -5,11 +5,10 @@
 
 #include "LanServer.h"
 #include "MonitoringWanServer.h"
-#include "DBConnection_TLS.h"
 #include "PerformanceMonitor.h"
 #include "MonitorProtocol.h"
 #include "MonitoringDefine.h"
-
+#include "DBConnection.h"
 
 class MonitoringLanServer : public LanServer
 {

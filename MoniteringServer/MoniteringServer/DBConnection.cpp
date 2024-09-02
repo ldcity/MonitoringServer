@@ -12,11 +12,14 @@ DBConnector::DBConnector(const wchar_t* host, const wchar_t* user, const wchar_t
 
 	if (sslOff)
 		mFlag = SSL_MODE_DISABLED;
+
+	dbLog = new Log(L"DBLog.txt");
 }
 
 
 DBConnector::~DBConnector()
 {
+	delete dbLog;
 }
 
 bool DBConnector::Open()
@@ -33,8 +36,6 @@ bool DBConnector::Open()
 	{
 		mysql_options(&conn, MYSQL_OPT_SSL_MODE, &mFlag);
 	}
-
-
 
 	std::string host;
 	std::string user;
@@ -72,7 +73,15 @@ bool DBConnector::Open()
 		return false;
 	}
 
-	mysql_set_character_set(connection, "utf8");
+	mysql_set_character_set(connection, "utf8mb4");
+
+	return true;
+}
+
+bool DBConnector::ReOpen()
+{
+	Close();
+	Open();
 
 	return true;
 }
@@ -252,8 +261,6 @@ bool DBConnector::AllQuery(std::string query)
 	return true;
 }
 
-
-
 void DBConnector::onError()
 {
 	strcpy_s(errorMsgUTF8, mysql_error(connection));
@@ -266,12 +273,107 @@ void DBConnector::onError()
 	//DBLog->logger(dfLOG_LEVEL_ERROR, __LINE__, errorMsg);
 }
 
-bool DBConnector::CallStoreProc(const std::wstring& procName, const std::wstring& tableName, const std::vector<std::pair<int, int>>& typeData)
+// 매개변수화된 쿼리 실행 - 벡터 버전
+bool DBConnector::ExecuteQuery(const std::wstring& query, std::vector<MYSQL_BIND>& bindParams, std::function<bool(MYSQL_STMT*, Log* dbLog)> resultHandler)
 {
+	MYSQL_STMT* stmt = mysql_stmt_init(connection);
+	if (!stmt)
+	{
+		dbLog->logger(dfLOG_LEVEL_ERROR, __LINE__, L"[DB] Coult not initialize statement");
+		return false;
+	}
 
+	std::string utf8Query(query.begin(), query.end());
+	if (mysql_stmt_prepare(stmt, utf8Query.c_str(), utf8Query.size()))
+	{
+		std::cout << mysql_stmt_error(stmt) << std::endl;
+		dbLog->logger(dfLOG_LEVEL_ERROR, __LINE__, L"[DB] Statement preparation failed : %s", mysql_stmt_error(stmt));
+		mysql_stmt_close(stmt);
+		return false;
+	}
+
+	if (!bindParams.empty() && mysql_stmt_bind_param(stmt, bindParams.data()))
+	{
+		dbLog->logger(dfLOG_LEVEL_ERROR, __LINE__, L"[DB] Parameter binding failed : %s", mysql_stmt_error(stmt));
+		mysql_stmt_close(stmt);
+		return false;
+	}
+
+	if (mysql_stmt_execute(stmt))
+	{
+		std::cout << mysql_stmt_error(stmt) << std::endl;
+		dbLog->logger(dfLOG_LEVEL_ERROR, __LINE__, L"[DB] Query execution failed : %s", mysql_stmt_error(stmt));
+		mysql_stmt_close(stmt);
+		return false;
+	}
+
+	bool isSuccessful = true;
+
+	if (resultHandler)
+		isSuccessful = resultHandler(stmt, dbLog);
+
+	mysql_stmt_close(stmt);
+
+	return isSuccessful;
+}
+
+bool DBConnector::CallStoreProcedure(const std::wstring& procedureQuery, const std::string& tableName, int logCode, const std::vector<std::pair<int, int>>& typeData)
+{
+	std::string jsonData = GenerateJSONData(typeData);
+
+	std::vector<MYSQL_BIND> bindParams;
+
+	// 매개변수 바인딩
+	MYSQL_BIND bind;
+	memset(&bind, 0, sizeof(bind));
+
+	// 테이블 이름 (문자열)
+	bind.buffer_type = MYSQL_TYPE_STRING;
+	bind.buffer = (char*)tableName.c_str();
+	bind.buffer_length = tableName.length();
+	bindParams.push_back(bind);
+	
+	MYSQL_BIND bind2;
+	memset(&bind2, 0, sizeof(bind2));
+
+	// 로그 코드 (정수형)
+	bind2.buffer_type = MYSQL_TYPE_LONG;
+	bind2.buffer = &logCode;
+	bindParams.push_back(bind2);
+
+	MYSQL_BIND bind3;
+	memset(&bind3, 0, sizeof(bind3));
+
+	// JSON 데이터 (문자열)
+	bind3.buffer_type = MYSQL_TYPE_STRING;
+	bind3.buffer = (char*)jsonData.c_str();
+	bind3.buffer_length = jsonData.length();
+	bindParams.push_back(bind3);
+
+	// 매개변수 바인딩 후에 매개변수화된 질의 구문인 procedureQuery 호출
+	if (!ExecuteQuery(procedureQuery.c_str(), bindParams, nullptr))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 std::string DBConnector::GenerateJSONData(const std::vector<std::pair<int, int>>& typeData)
 {
-	
+	Json::Value jsonData(Json::arrayValue);
+
+	for (const auto& [type, data] : typeData)
+	{
+		Json::Value item;
+		item["type"] = type;
+		item["data"] = data;
+		jsonData.append(item);
+	}
+
+	Json::StreamWriterBuilder writer;
+	writer["indentation"] = "";
+	std::string jsonString = Json::writeString(writer, jsonData);
+
+	return jsonString;
 }
